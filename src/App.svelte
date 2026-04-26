@@ -1,12 +1,13 @@
 <script lang="ts">
   import GraphView from './components/GraphView.svelte';
-    import { confetti } from './lib/confetti';
-    import { delaunay } from './lib/delaunay';
-  import { generateDelaunay, generate_triangulated } from './lib/generator';
+    import NewGame from './components/NewGame.svelte';
+  import { confetti } from './lib/confetti';
+  import { generateDelaunay, generateTriangulated } from './lib/generator';
   import { segmentsIntersect, type Point } from './lib/geometry';
   import { tabulate } from './lib/util';
 
   const output = generateDelaunay(8); 
+  let generation = $state("delaunay");
   let edges = $state(output.edges);
   let solution = $state(output.solution);
   
@@ -18,10 +19,18 @@
   let solved = $state(false);
   let history: Point[][] = $state([nodes.map(n => ({...n}))]);
 
+  let dialogEl: HTMLDialogElement = $state()!;
+
   let nodeCount = $derived(nodes.length);
 
   let intersects = $derived(edges.map(([u, v], i) =>
-    edges.some(([w, t], j) => i !== j && segmentsIntersect(nodes[u], nodes[v], nodes[w], nodes[t]))
+    edges.some(([w, t]) => 
+      u !== w 
+      && u !== t 
+      && v !== w
+      && v !== t
+      && segmentsIntersect(nodes[u], nodes[v], nodes[w], nodes[t])
+    )
   ))
 
   let isGameFinished = $state(false);
@@ -58,6 +67,28 @@
     solved = false;
   }
 
+  function openNewGame() {
+    dialogEl.showModal();
+  }
+
+  function newGame(gen: string, nCount: number) {
+    generation = gen;
+    const output =
+      generation === "delaunay"
+      ? generateDelaunay(nCount)
+      : generateTriangulated(nCount);
+    edges = output.edges;
+    solution = output.solution;
+  
+    nodes = tabulate(nCount, i => ({
+      x: 0.5 + 0.4 * Math.sin(2 * i * Math.PI / nCount),
+      y: 0.5 + 0.4 * Math.cos(2 * i * Math.PI / nCount),
+    }));
+
+    solved = false;
+    history = [nodes.map(n => ({...n}))];
+    dialogEl.close();
+  }
 
 
 </script>
@@ -67,6 +98,7 @@
     <button onclick={undo}>Annuler</button>
     <button onclick={restart}>Recommencer</button>
     <button onclick={solve}>Solution</button>
+    <button onclick={openNewGame}>Nouvelle partie</button>
   </div>
   <main>
     <GraphView {nodes} {edges} {solved} {intersects} {moveNode} {checkPlanarity} />
@@ -77,6 +109,9 @@
     <div use:confetti={{stageHeight: "100vh", stageWidth: "100vw"}}></div>
   </div>
 {/if}
+<dialog bind:this={dialogEl}>
+  <NewGame {generation} {nodeCount} {newGame} />
+</dialog>
 
 <style>
   .game-container {
@@ -109,5 +144,37 @@
     justify-content: center;
     z-index: 400;
   }
-</style>
 
+  dialog {
+    display: block;
+    border: none;
+    background-image: var(--bg-board);
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 
+                0 1px 2px -1px rgb(0 0 0 / 0.1);
+
+    &::backdrop {
+      background-color: rgba(107, 114, 128, 0.7);
+    }
+    
+    &:not([open]) {
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    &[open] {
+      animation: flip-y 1s both;
+    }
+  }
+
+  @keyframes flip-y {
+    0% { 
+      opacity: 0;
+      transform: rotateY(180deg);
+    }
+    100% { 
+      opacity: 1;
+      transform: rotateY(0);
+    }
+  }
+</style>

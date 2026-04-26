@@ -32,14 +32,6 @@ function onSegment(p: Point, q: Point, r: Point) {
 }
 
 export function segmentsIntersect(p1: Point, q1: Point, p2: Point, q2: Point) {
-  if (p1.x === p2.x && p1.y === p2.y
-    || p1.x === q2.x && p1.y === q2.y
-    || q1.x === p2.x && q1.y === p2.y
-    || q1.x === q2.x && q1.y === q2.y
-  ) {
-    return false;
-  }  
-  
   const o1 = orientation(p1, q1, p2);
   const o2 = orientation(p1, q1, q2);
   const o3 = orientation(p2, q2, p1);

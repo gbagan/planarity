@@ -1,5 +1,5 @@
 import type { Point } from "./geometry";
-import { range } from "./util";
+import { partition, range } from "./util";
 
 type Triangle = [number, number, number]
 
@@ -35,21 +35,6 @@ export function delaunay(points: Point[]): [number, number][] {
   const orientedTriangle = (i1: number, i2: number, i3: number): Triangle =>
     orient(points[i1], points[i2], points[i3]) < 0 ? [i3, i2, i1] : [i1, i2, i3];
 
-  // Super triangle robuste
-  let minX = Infinity, minY = Infinity;
-  let maxX = -Infinity, maxY = -Infinity;
-
-  for (const p of points) {
-    minX = Math.min(minX, p.x);
-    minY = Math.min(minY, p.y);
-    maxX = Math.max(maxX, p.x);
-    maxY = Math.max(maxY, p.y);
-  }
-
-  const dx = maxX - minX;
-  const dy = maxY - minY;
-  const delta = Math.max(dx, dy) * 100;
-
   const p1 = {x: -2, y: -1 };
   const p2 = {x: 0.5, y: 2 };
   const p3 = {x: 3, y: -1 };
@@ -63,7 +48,9 @@ export function delaunay(points: Point[]): [number, number][] {
   //points = points.sort(() => Math.random() - 0.5);
 
   points.forEach((point, i) => {
-    const bad = triangles.filter(([i1, i2, i3]) => inCircle(points[i1], points[i2], points[i3], point));
+    const [bad, good] = partition(triangles, ([i1, i2, i3]) =>
+      inCircle(points[i1], points[i2], points[i3], point)
+    );
 
     // Frontière du trou via hash
     const edgeMap = new Map<string, [number, number]>();
@@ -79,7 +66,7 @@ export function delaunay(points: Point[]): [number, number][] {
       }
     }
 
-    triangles = triangles.filter(t => !bad.includes(t));
+    triangles = good;
 
     for (const [i1, i2] of edgeMap.values()) {
       triangles.push(orientedTriangle(i1, i2, i));

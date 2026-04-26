@@ -60,18 +60,25 @@ export function generate_tantalo(n: number): [number, number][] {
 }
 */
 
-export function generate_triangulated(n: number): Output {
+export function generateTriangulated(n: number): Output {
   const remaining = range(0, n);
+  const solution = tabulate(n, () => ({x: 0, y: 0}));
+  
   const a = popRandom(remaining);
   const b = popRandom(remaining);
   const c = popRandom(remaining);
-  const faces = [[a, b, c], [a, b, c]];
+  solution[a] = {x: 0.05, y: 0.95};
+  solution[b] = {x: 0.95, y: 0.95};
+  solution[c] = {x : 0.5, y: 0.1};
+  const faces = [[a, b, c]];
   while (remaining.length > 0) {
     const [u, v, w] = popRandom(faces);
     const t = popRandom(remaining);
     faces.push([u, v, t]);
     faces.push([u, w, t]);
     faces.push([v, w, t]);
+    solution[t].x = (solution[u].x + solution[v].x + solution[w].x) / 3;
+    solution[t].y = (solution[u].y + solution[v].y + solution[w].y) / 3;
   }
   const seen: Set<number> = new Set();
   const edges: [number, number][] = [];
@@ -83,7 +90,7 @@ export function generate_triangulated(n: number): Output {
       }
     }
   }
-  return { edges, solution: [] }
+  return { edges, solution }
 }
 
 export function generateDelaunay(n: number): Output {

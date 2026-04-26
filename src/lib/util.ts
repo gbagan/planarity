@@ -21,3 +21,14 @@ export function popRandom<A>(arr: A[]): A {
   arr.splice(n, 1);
   return x;
 }
+
+export function partition<A>(xs: A[], f: (x: A) => boolean): [A[], A[]] {
+  const yes: A[] = [];
+  const no: A[] = [];
+  const n = xs.length;
+  for (let i = 0; i < n; i++) {
+    const x = xs[i];
+    if (f(x)) { yes.push(x) } else  { no.push(x) };
+  }
+  return [yes, no];
+}
