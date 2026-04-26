@@ -1,8 +1,6 @@
 export type Point = {x: number, y: number};
 export type Edge = [number, number];
 
-const EPS = 1e-9;
-
 export function lineIntersection(a: Point, b: Point, c: Point, d: Point): Point {
     const x1 = a.x, y1 = a.y;
     const x2 = b.x, y2 = b.y;
@@ -17,19 +15,12 @@ export function lineIntersection(a: Point, b: Point, c: Point, d: Point): Point 
     return { x: px, y: py };
 }
 
+const orientation = (p: Point, q: Point, r: Point) =>
+  Math.sign((q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y));
 
-function orientation(p: Point, q: Point, r: Point) {
-  const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-  if (Math.abs(val) < EPS) return 0;
-  return val > 0 ? 1 : 2;
-}
-
-function onSegment(p: Point, q: Point, r: Point) {
-  return (
-    Math.min(p.x, r.x) <= q.x && q.x <= Math.max(p.x, r.x) &&
-    Math.min(p.y, r.y) <= q.y && q.y <= Math.max(p.y, r.y)
-  );
-}
+const onSegment = (p: Point, q: Point, r: Point) =>
+  Math.min(p.x, r.x) <= q.x && q.x <= Math.max(p.x, r.x)
+  && Math.min(p.y, r.y) <= q.y && q.y <= Math.max(p.y, r.y);
 
 export function segmentsIntersect(p1: Point, q1: Point, p2: Point, q2: Point) {
   const o1 = orientation(p1, q1, p2);
