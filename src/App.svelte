@@ -86,6 +86,7 @@
     }));
 
     solved = false;
+    isGameFinished = false;
     history = [nodes.map(n => ({...n}))];
     dialogEl.close();
   }
@@ -108,7 +109,7 @@
     <GraphView {nodes} {edges} {solved} {intersects} {moveNode} {checkPlanarity} />
   </main>
 </div>
-{#if isGameFinished}
+{#if isGameFinished && !solved}
   <div class="confetti-container">
     <div use:confetti={{stageHeight: "100vh", stageWidth: "100vw"}}></div>
   </div>
