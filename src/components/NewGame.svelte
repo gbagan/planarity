@@ -5,8 +5,9 @@
     generation: string;
     nodeCount: number;
     newGame: (gen: string, ncount: number) => void;
+    cancel: () => void;
   }
-  let { generation: gen, nodeCount: ncount, newGame }: Props = $props();
+  let { generation: gen, nodeCount: ncount, newGame, cancel }: Props = $props();
 
   let generation = $derived(gen);
   let nodeCount = $derived(ncount);
@@ -20,7 +21,7 @@
 </div>
 <div class="body">
   <div class="container">
-    <div class="menu-title">Adversaire</div>
+    <div class="menu-title">Algorithme de génération</div>
     <div class="menu-buttons">
       {#each generationTitles as [name, fullname]}
         <button
@@ -45,7 +46,7 @@
   </div> 
 </div>
 <div class="buttons">
-  <Button onclick={() => {}}>Précédent</Button>
+  <Button onclick={cancel}>Annuler</Button>
   <Button onclick={() => newGame(generation, nodeCount)}>Ok</Button>
 </div>
 

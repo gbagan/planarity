@@ -90,6 +90,10 @@
     dialogEl.close();
   }
 
+  function newGameCancel() {
+    dialogEl.close();
+  }
+
 
 </script>
 
@@ -110,7 +114,7 @@
   </div>
 {/if}
 <dialog bind:this={dialogEl}>
-  <NewGame {generation} {nodeCount} {newGame} />
+  <NewGame {generation} {nodeCount} {newGame} cancel={newGameCancel} />
 </dialog>
 
 <style>
