@@ -43,16 +43,11 @@ export function delaunay(points: Point[]): [number, number][] {
 
   let triangles: [number, number, number][] = [orientedTriangle(n, n+1, n+2)];
 
-  // Shuffle (important pour stabilité)
-  // todo a changer
-  //points = points.sort(() => Math.random() - 0.5);
-
   points.forEach((point, i) => {
     const [bad, good] = partition(triangles, ([i1, i2, i3]) =>
       inCircle(points[i1], points[i2], points[i3], point)
     );
 
-    // Frontière du trou via hash
     const edgeMap = new Map<string, [number, number]>();
 
     for (const [i1, i2, i3] of bad) {
@@ -72,15 +67,6 @@ export function delaunay(points: Point[]): [number, number][] {
       triangles.push(orientedTriangle(i1, i2, i));
     }
   })
-
-  /*
-  // Nettoyage du super triangle
-  triangles = triangles.filter(t =>
-    !t.hasVertex(p1) &&
-    !t.hasVertex(p2) &&
-    !t.hasVertex(p3)
-  );
-  */
 
   const edges: [number, number][] = [];
   const seen = new Set();
