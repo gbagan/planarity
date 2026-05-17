@@ -4,14 +4,14 @@
   import { confetti } from './lib/confetti';
   import { generateDelaunay, generateTriangulated } from './lib/generator';
   import { segmentsIntersect, type Point } from './lib/geometry';
-  import { tabulate } from './lib/util';
+  import { times } from './lib/util';
 
   const output = generateDelaunay(8); 
   let generation = $state("delaunay");
   let edges = $state(output.edges);
   let solution = $state(output.solution);
   
-  let nodes: Point[] = $state(tabulate(8, i => ({
+  let nodes: Point[] = $state(times(8, i => ({
     x: 0.5 + 0.4 * Math.sin(2 * i * Math.PI / 8),
     y: 0.5 + 0.4 * Math.cos(2 * i * Math.PI / 8),
   })));
@@ -80,7 +80,7 @@
     edges = output.edges;
     solution = output.solution;
   
-    nodes = tabulate(nCount, i => ({
+    nodes = times(nCount, i => ({
       x: 0.5 + 0.4 * Math.sin(2 * i * Math.PI / nCount),
       y: 0.5 + 0.4 * Math.cos(2 * i * Math.PI / nCount),
     }));

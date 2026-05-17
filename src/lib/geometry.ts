@@ -1,20 +1,6 @@
 export type Point = {x: number, y: number};
 export type Edge = [number, number];
 
-export function lineIntersection(a: Point, b: Point, c: Point, d: Point): Point {
-    const x1 = a.x, y1 = a.y;
-    const x2 = b.x, y2 = b.y;
-    const x3 = c.x, y3 = c.y;
-    const x4 = d.x, y4 = d.y;
-
-    const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-
-    const px = ((x1*y2 - y1*x2) * (x3 - x4) - (x1 - x2) * (x3*y4 - y3*x4)) / denom;
-    const py = ((x1*y2 - y1*x2) * (y3 - y4) - (y1 - y2) * (x3*y4 - y3*x4)) / denom;
-
-    return { x: px, y: py };
-}
-
 const orientation = (p: Point, q: Point, r: Point) =>
   Math.sign((q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y));
 

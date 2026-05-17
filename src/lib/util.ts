@@ -1,4 +1,4 @@
-export const tabulate = <A>(n: number, f: (i: number) => A): A[] => Array.from({ length: n }, (_, i) => f(i));
+export const times = <A>(n: number, f: (i: number) => A): A[] => Array.from({ length: n }, (_, i) => f(i));
 
 export function range(start: number, end: number, step?: number): number[] {
   const res = [];
