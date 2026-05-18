@@ -1,6 +1,7 @@
 import { delaunay } from "./delaunay";
 import { type Edge, type Point } from "./geometry";
-import { popRandom, range, times } from "./util";
+import { range, times } from "@gbagan/utils";
+import { popRandom } from "./util";
 
 type Output = {
   edges: Edge[],

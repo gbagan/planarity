@@ -1,5 +1,5 @@
 import type { Point } from "./geometry";
-import { partition } from "./util";
+import { partition } from "@gbagan/utils";
 
 type Triangle = [number, number, number];
 

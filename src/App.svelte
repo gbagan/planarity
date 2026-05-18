@@ -1,10 +1,10 @@
 <script lang="ts">
   import GraphView from './components/GraphView.svelte';
-    import NewGame from './components/NewGame.svelte';
+  import NewGame from './components/NewGame.svelte';
   import { confetti } from './lib/confetti';
   import { generateDelaunay, generateTriangulated } from './lib/generator';
   import { segmentsIntersect, type Point } from './lib/geometry';
-  import { times } from './lib/util';
+  import { times } from '@gbagan/utils';
 
   const output = generateDelaunay(8); 
   let generation = $state("delaunay");
@@ -17,13 +17,14 @@
   })));
 
   let solved = $state(false);
+  // svelte-ignore state_referenced_locally
   let history: Point[][] = $state([nodes.map(n => ({...n}))]);
 
   let dialogEl: HTMLDialogElement = $state()!;
 
   let nodeCount = $derived(nodes.length);
 
-  let intersects = $derived(edges.map(([u, v], i) =>
+  let intersects = $derived(edges.map(([u, v]) =>
     edges.some(([w, t]) => 
       u !== w 
       && u !== t 
